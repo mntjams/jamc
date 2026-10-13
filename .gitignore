@@ -1,3 +1,8 @@
+# x86_64 utils output
+sysroot/
+rpms/
+sysroot.erofs
+
 # Prerequisites
 *.d
 

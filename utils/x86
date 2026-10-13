@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+# readlink makes the invocation path into an absolute path
+# dirname strips the script filename
+# /.. steps from utils into root
+ROOT="$(dirname $(readlink -f "$0"))/.."
+IMG="${ROOT}/sysroot.erofs"
+SHELL_X86="${ROOT}/sysroot/usr/bin/bash"
+
+# If no program was specified, execute an interactive bash
+if [ "$#" -eq 0 ]; then set -- bash -i; fi
+
+# printf '%q' prints it correctly escaped for a shell to process
+exec muvm -f "$IMG" -i -t -- "$SHELL_X86" -c \
+  "cd $(printf '%q' "$PWD"); exec $(printf '%q ' "$@")"

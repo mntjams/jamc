@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+mkdir -p ../rpms
+
+# Download rpms
+PKGS="gcc gcc-c++ libstdc++-devel glibc-devel binutils make python3 gdb bash \
+coreutils diffutils findutils grep sed tar gzip which file"
+dnf download --forcearch=x86_64 --resolve --alldeps --destdir=../rpms $PKGS
+
+mkdir -p ../sysroot
+cd ../sysroot
+
+# Extract the filesystem
+rpm2cpio ../rpms/filesystem-*.rpm | cpio -idmu --quiet
+
+# Make the FS traversable (allow for the upcomming package extraction)
+chmod -R u+rwX .
+
+# Extract the rest of the packages
+for r in ../rpms/*.rpm; do
+    # Don't extract the FS a second time
+    case "$r" in *filesystem-*) continue;; esac
+    rpm2cpio "$r" | cpio -idmu --quiet
+done
+
+# Required for mkfs to work
+chmod -R u+rwX .
+
+cd ../
+mkfs.erofs -b4096 -zlz4hc sysroot.erofs sysroot
