@@ -64,11 +64,13 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-# TODO - Providing nonexistent file isn't stopped here
 # Fails if:
 #     - Not exactly one input file
 #     - Too many stage stop flags
-if [ "$IN_FILE_COUNTER" -ne 1 ] || [ "$STAGE_STOP_FLAG_COUNTER" -gt 1 ]; then
+#     - Non-existent file
+if [ "$IN_FILE_COUNTER" -ne 1 ]\
+    || [ "$STAGE_STOP_FLAG_COUNTER" -gt 1 ]\
+    || [ ! -f "$IN_FILE" ]; then
     echo "Usage: ${JAMC} [--<lex|parse|codegen>] INPUT_FILE"
     exit "$ERR"
 fi
