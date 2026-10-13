@@ -3,6 +3,9 @@ sysroot/
 rpms/
 sysroot.erofs
 
+# Scratch directory for local playtime
+scratch/
+
 # Prerequisites
 *.d
 

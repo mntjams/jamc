@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# No set -e
+# We may want to remove files before exiting
+set -uo pipefail
+
+# My compiler name
+JAMC=jamc
+
+# Underlying compiler name
+# used for preprocessing and assembling
+UNDER_CC=gcc
+
+ERR=1
+
+# --lex runs only lexer,
+# stops befor parsing
+LEX_FLAG=false
+
+# --parse runs only lexer and parser,
+# stops before assembly generation
+PARSE_FLAG=false
+
+# --codegen runs lexer, parser and assembly generation,
+# stops before code emission
+CODEGEN_FLAG=false
+
+# Counts times user set a flag that indicates
+# stopping after a certain stage.
+# More than 1 is an error.
+STAGE_STOP_FLAG_COUNTER=0
+
+IN_FILE=""
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        "--lex")
+            LEX_FLAG=true
+            ((STAGE_STOP_FLAG_COUNTER++))
+            shift
+            ;;
+        "--parse")
+            PARSE_FLAG=true
+            ((STAGE_STOP_FLAG_COUNTER++))
+            shift
+            ;;
+        "--codegen")
+            CODEGEN_FLAG=true
+            ((STAGE_STOP_FLAG_COUNTER++))
+            shift
+            ;;
+        -* | --*)
+            echo "Unknown flag $1"
+            exit "$ERR"
+            ;;
+        *)
+            IN_FILE="$1"
+            shift
+            ;;
+    esac
+done
+
+# No input file defined or too many stage stop flags
+if [ -z "$IN_FILE" ] || [ "$STAGE_STOP_FLAG_COUNTER" -gt 1 ]; then
+    echo "Usage: ${JAMC} [--<lex|parse|codegen>] INPUT_FILE"
+    exit "$ERR"
+fi
+
+IN_FILE_NO_EXT="${IN_FILE%.*}"
+IN_FILE_E="${IN_FILE_NO_EXT}.i"
+IN_FILE_S="${IN_FILE_NO_EXT}.s"
+OUT_FILE="$IN_FILE_NO_EXT"
+
+"$UNDER_CC" -E -P "$IN_FILE" -o "$IN_FILE_E"
+STATUS=$?
+if [ "$STATUS" -ne 0 ]; then
+    exit "$STATUS"
+fi
+
+# Always remove the input file and only then test return val
+"$UNDER_CC" -S "$IN_FILE_E" -o "$IN_FILE_S"
+STATUS=$?
+rm "$IN_FILE_E"
+if [ "$STATUS" -ne 0 ]; then
+    exit "$STATUS"
+fi
+
+"$UNDER_CC" "$IN_FILE_S" -o "$OUT_FILE"
+STATUS=$?
+rm "$IN_FILE_S"
+if [ "$STATUS" -ne 0 ]; then
+    exit "$STATUS"
+fi
