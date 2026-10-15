@@ -1,12 +1,32 @@
 #ifndef LEXER_HPP
 #define LEXER_HPP
 
+#include <cstddef>
+#include <cstdint>
+#include <string>
 #include <string_view>
 #include <vector>
 
 namespace jamc::core::lex {
-enum class Token {
-    // TODO - Create tokens
+enum class TokenType : std::uint8_t {
+    Eof,
+    Ident,
+    Constant,
+    Void,
+    Int,
+    Return,
+    LParen,
+    RParen,
+    LBrace,
+    RBrace,
+    Semic
+};
+
+struct Token {
+    TokenType type{};
+    std::size_t line{};
+    std::size_t col{};
+    std::string name{};
 };
 
 struct LexResult {

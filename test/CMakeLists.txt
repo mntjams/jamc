@@ -3,7 +3,7 @@ add_executable(test-lexer
 )
 target_link_libraries(test-lexer
     PRIVATE jamc-core
-    GTest::gtest_main
+    GTest::gmock_main
 )
 
 include(GoogleTest)
