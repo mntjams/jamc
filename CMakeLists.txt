@@ -21,3 +21,8 @@ FetchContent_Declare(
   GIT_TAG v1.18.0
 )
 FetchContent_MakeAvailable(googletest)
+
+add_subdirectory(src/jamc/)
+if (BUILD_TESTING)
+    add_subdirectory(test)
+endif()
