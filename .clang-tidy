@@ -14,8 +14,9 @@ Checks: >
   -readability-identifier-length,
   -readability-redundant-member-init
 
-HeaderFilterRegex: '^include/jamc/.*'
-FormatStyle: 'Google'
+
+HeaderFilterRegex: 'include/jamc/.*'
+FormatStyle: 'file'
 
 CheckOptions:
   - key:             readability-identifier-naming.NamespaceCase
