@@ -1,10 +1,9 @@
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
+#include "jamc/core/lex.hpp"
 
 #include <cstddef>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <string>
-
-#include "jamc/core/lex.hpp"
 
 namespace {
 using ::jamc::core::lex::Lex;
@@ -18,44 +17,50 @@ using ::testing::ElementsAre;
 using ::testing::Field;
 using ::testing::Matcher;
 
-auto TokenMatches(const Matcher<TokenType>& type_matcher,
-                  const Matcher<std::size_t>& line_matcher,
-                  const Matcher<std::size_t>& col_matcher,
-                  const Matcher<std::string>& name_matcher)
-    -> Matcher<const Token&> {
+auto TokenMatches(Matcher<TokenType> const &type_matcher,
+                  Matcher<std::size_t> const &line_matcher,
+                  Matcher<std::size_t> const &col_matcher,
+                  Matcher<std::string> const &name_matcher)
+    -> Matcher<Token const &> {
     return AllOf(Field("type", &Token::type, type_matcher),
                  Field("line", &Token::line, line_matcher),
                  Field("col", &Token::col, col_matcher),
                  Field("name", &Token::name, name_matcher));
 }
 
-auto TokenIs(const Matcher<TokenType>& type_matcher,
-             const Matcher<std::string>& name_matcher)
-    -> Matcher<const Token&> {
+auto TokenIs(Matcher<TokenType> const &type_matcher,
+             Matcher<std::string> const &name_matcher)
+    -> Matcher<Token const &> {
     return TokenMatches(type_matcher, _, _, name_matcher);
 }
 
-auto TokenIs(const Matcher<TokenType>& type_matcher) -> Matcher<const Token&> {
+auto TokenIs(Matcher<TokenType> const &type_matcher) -> Matcher<Token const &> {
     return TokenMatches(type_matcher, _, _, _);
 }
 
-auto TokenAt(const Matcher<std::size_t>& line_matcher,
-             const Matcher<std::size_t>& col_matcher) -> Matcher<const Token&> {
+auto TokenAt(Matcher<std::size_t> const &line_matcher,
+             Matcher<std::size_t> const &col_matcher)
+    -> Matcher<Token const &> {
     return TokenMatches(_, line_matcher, col_matcher, _);
 }
 
 TEST(Lexer, CorrectTokensFromMinimalProgram) {
-    std::string source =
+    std::string const source =
         "int main(void) {\n"
         "    return 2;\n"
         "}";
     auto lex_res = Lex(source);
     EXPECT_THAT(lex_res.tokens,
-                ElementsAre(TokenIs(Int, "int"), TokenIs(Ident, "main"),
-                            TokenIs(LParen, "("), TokenIs(Void, "void"),
-                            TokenIs(RParen, ")"), TokenIs(LBrace, "{"),
-                            TokenIs(Return, "return"), TokenIs(Constant, "2"),
-                            TokenIs(Semic, ";"), TokenIs(RBrace, "}")));
+                ElementsAre(TokenIs(Int, "int"),
+                            TokenIs(Ident, "main"),
+                            TokenIs(LParen, "("),
+                            TokenIs(Void, "void"),
+                            TokenIs(RParen, ")"),
+                            TokenIs(LBrace, "{"),
+                            TokenIs(Return, "return"),
+                            TokenIs(Constant, "2"),
+                            TokenIs(Semic, ";"),
+                            TokenIs(RBrace, "}")));
 }
 
 // TODO - Come up with lexer tests

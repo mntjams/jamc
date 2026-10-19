@@ -30,7 +30,7 @@ struct Token {
 };
 
 struct LexResult {
-   public:
+public:
     std::vector<Token> tokens{};
     // TODO - Create vector of diagnostics (warnings/errors)
 };
