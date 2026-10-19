@@ -7,6 +7,7 @@
 
 namespace {
 using ::jamc::core::lex::Lex;
+using ::jamc::core::lex::LexResult;
 using ::jamc::core::lex::Token;
 using ::jamc::core::lex::TokenType;
 using enum TokenType;
@@ -44,13 +45,21 @@ auto TokenAt(Matcher<std::size_t> const &line_matcher,
     return TokenMatches(_, line_matcher, col_matcher, _);
 }
 
+auto Body(LexResult res) -> LexResult {
+    using enum TokenType;
+    if (res.tokens.back().type == Eof) {
+        res.tokens.pop_back();
+    }
+    return res;
+}
+
 TEST(Lexer, CorrectTokensFromMinimalProgram) {
     std::string const source =
         "int main(void) {\n"
         "    return 2;\n"
         "}";
     auto lex_res = Lex(source);
-    EXPECT_THAT(lex_res.tokens,
+    EXPECT_THAT(Body(lex_res).tokens,
                 ElementsAre(TokenIs(Int, "int"),
                             TokenIs(Ident, "main"),
                             TokenIs(LParen, "("),
