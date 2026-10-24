@@ -28,12 +28,14 @@ public:
 namespace std {
 template <>
 struct formatter<::jamc::core::CliConfigError> {
-    // NOLINTNEXTLINE
-    auto constexpr parse(std::format_parse_context &ctx) { return ctx.begin(); }
+    template <typename ParseContext>
+    auto constexpr parse(ParseContext &ctx) { // NOLINT
+        return ctx.begin();
+    }
 
-    // NOLINTNEXTLINE
-    auto format(::jamc::core::CliConfigError const &err,
-                std::format_context &ctx) const {
+    template <typename FmtContext>
+    auto format(::jamc::core::CliConfigError const &err, // NOLINT
+                FmtContext &ctx) const {
         return format_to(ctx.out(), "{}", err.ToString());
     }
 };
