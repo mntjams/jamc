@@ -1,13 +1,16 @@
 #ifndef HELPERS_HPP
 #define HELPERS_HPP
 
+#include "jamc/core/errors.hpp"
+
+#include <concepts>
 #include <print>
 #include <vector>
+#include <format>
 
 namespace jamc {
-// You could probably restrict E to be a descendant of Error
-// but that is too wordy for this trivial usecase
 template <typename E>
+    requires std::derived_from<E, core::Error> && std::formattable<E, char>
 void ReportErrors(std::vector<E> errs) {
     for (auto i{0UZ}; i < errs.size(); ++i) {
         std::print(stderr, "{}", errs[i]);
