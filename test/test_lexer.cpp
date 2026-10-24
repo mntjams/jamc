@@ -46,7 +46,6 @@ auto TokenAt(Matcher<std::size_t> const &line_matcher,
 }
 
 auto Body(LexResult res) -> LexResult {
-    using enum TokenType;
     if (res.tokens.back().type == Eof) {
         res.tokens.pop_back();
     }
