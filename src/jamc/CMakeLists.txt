@@ -6,4 +6,5 @@ add_executable(jamc
 
 target_link_libraries(jamc
     PRIVATE jamc-core
+    common-compiler-flags
 )

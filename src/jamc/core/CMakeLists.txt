@@ -6,4 +6,5 @@ add_library(jamc-core
 
 target_include_directories(jamc-core
     PUBLIC ${CMAKE_SOURCE_DIR}/include
+    common-compiler-flags
 )

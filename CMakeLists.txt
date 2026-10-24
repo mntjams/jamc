@@ -9,8 +9,16 @@ project("jamc"
     LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Shall be inherited by all downstream users
+# (INTERFACE = the target doesn't use it but all downstream should)
+add_library(common-compiler-flags INTERFACE)
+target_compile_options(common-compiler-flags INTERFACE
+    $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -Wpedantic>
+)
+
 
 include(CTest)
 include(FetchContent)
