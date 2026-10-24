@@ -59,4 +59,6 @@ CheckOptions:
     value:           CamelCase
   - key:             readability-identifier-naming.GlobalConstantCase
     value:           CamelCase
+  - key:             modernize-use-trailing-return-type.TransformLambdas
+    value:           none
 
