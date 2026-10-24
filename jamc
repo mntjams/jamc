@@ -5,7 +5,7 @@
 set -uo pipefail
 
 # My compiler name
-JAMC=jamc
+JAMC=build/src/jamc/jamc
 
 # Underlying compiler name
 # used for preprocessing and assembling
@@ -13,17 +13,7 @@ UNDER_CC=gcc
 
 ERR=1
 
-# --lex runs only lexer,
-# stops befor parsing
-LEX_FLAG=false
-
-# --parse runs only lexer and parser,
-# stops before assembly generation
-PARSE_FLAG=false
-
-# --codegen runs lexer, parser and assembly generation,
-# stops before code emission
-CODEGEN_FLAG=false
+JAMC_FLAGS=""
 
 # Counts times user set a flag that indicates
 # stopping after a certain stage.
@@ -38,17 +28,17 @@ IN_FILE=""
 while [ "$#" -gt 0 ]; do
     case "$1" in
         "--lex")
-            LEX_FLAG=true
+            JAMC_FLAGS="${JAMC_FLAGS} --lex"
             ((++STAGE_STOP_FLAG_COUNTER))
             shift
             ;;
         "--parse")
-            PARSE_FLAG=true
+            JAMC_FLAGS="${JAMC_FLAGS} --parse"
             ((++STAGE_STOP_FLAG_COUNTER))
             shift
             ;;
         "--codegen")
-            CODEGEN_FLAG=true
+            JAMC_FLAGS="${JAMC_FLAGS} --codegen"
             ((++STAGE_STOP_FLAG_COUNTER))
             shift
             ;;
@@ -71,7 +61,7 @@ done
 if [ "$IN_FILE_COUNTER" -ne 1 ]\
     || [ "$STAGE_STOP_FLAG_COUNTER" -gt 1 ]\
     || [ ! -f "$IN_FILE" ]; then
-    echo "Usage: ${JAMC} [--<lex|parse|codegen>] INPUT_FILE"
+    echo "Usage: ./jamc [--lex | --parse | --codegen] INPUT_FILE"
     exit "$ERR"
 fi
 
@@ -86,8 +76,8 @@ if [ "$STATUS" -ne 0 ]; then
     exit "$STATUS"
 fi
 
-# Always remove the input file and only then test return val
-"$UNDER_CC" -S "$IN_FILE_E" -o "$IN_FILE_S"
+# Use our compiler here
+"$JAMC" $JAMC_FLAGS "$IN_FILE_E"
 STATUS=$?
 rm "$IN_FILE_E"
 if [ "$STATUS" -ne 0 ]; then
