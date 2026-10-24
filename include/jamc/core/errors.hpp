@@ -2,7 +2,8 @@
 #define ERRORS_HPP
 
 #include <cstdint>
-#include <ostream>
+#include <format>
+#include <string_view>
 
 namespace jamc::core {
 struct Error {};
@@ -20,11 +21,21 @@ public:
     explicit CliConfigError(ErrorType t)
         : type(t) {};
 
-    friend auto operator<<(std::ostream &ostream, CliConfigError const &err)
-        -> std::ostream &;
-
     auto ToString() const -> std::string_view;
 };
 }  // namespace jamc::core
 
+namespace std {
+template <>
+struct formatter<::jamc::core::CliConfigError> {
+    // NOLINTNEXTLINE
+    auto constexpr parse(std::format_parse_context &ctx) { return ctx.begin(); }
+
+    // NOLINTNEXTLINE
+    auto format(::jamc::core::CliConfigError const &err,
+                std::format_context &ctx) const {
+        return format_to(ctx.out(), "{}", err.ToString());
+    }
+};
+}  // namespace std
 #endif

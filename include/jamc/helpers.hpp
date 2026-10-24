@@ -1,7 +1,7 @@
 #ifndef HELPERS_HPP
 #define HELPERS_HPP
 
-#include <iostream>
+#include <print>
 #include <vector>
 
 namespace jamc {
@@ -10,11 +10,11 @@ namespace jamc {
 template <typename E>
 void ReportErrors(std::vector<E> errs) {
     for (auto i{0UZ}; i < errs.size(); ++i) {
-        std::cerr << errs[i];
+        std::print(stderr, "{}", errs[i]);
         if (i != errs.size() - 1) {
-            std::cerr << ", ";
+            std::print(stderr, ", ");
         } else {
-            std::cerr << "\n";
+            std::println(stderr);
         }
     }
 }
