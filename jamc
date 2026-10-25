@@ -85,6 +85,12 @@ if [ "$STATUS" -ne 0 ]; then
     exit "$STATUS"
 fi
 
+# If stop-after flags are set then jamc didn't export an assembly file
+# and the next step has nothing to consume (which results in an error)
+if [ -n "$JAMC_FLAGS" ]; then
+    exit 0
+fi
+
 "$UNDER_CC" "$IN_FILE_S" -o "$OUT_FILE"
 STATUS=$?
 rm "$IN_FILE_S"
