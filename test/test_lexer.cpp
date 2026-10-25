@@ -1,4 +1,4 @@
-#include "jamc/core/lex.hpp"
+#include "jamc/lex.hpp"
 
 #include <cstddef>
 #include <gmock/gmock.h>

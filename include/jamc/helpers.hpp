@@ -1,7 +1,7 @@
 #ifndef HELPERS_HPP
 #define HELPERS_HPP
 
-#include "jamc/core/errors.hpp"
+#include "jamc/errors.hpp"
 
 #include <concepts>
 #include <print>

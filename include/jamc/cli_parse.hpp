@@ -1,7 +1,7 @@
 #ifndef CLI_PARSE_HPP
 #define CLI_PARSE_HPP
 
-#include "jamc/core/errors.hpp"
+#include "jamc/errors.hpp"
 
 #include <cstddef>
 #include <expected>

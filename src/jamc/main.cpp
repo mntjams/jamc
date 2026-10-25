@@ -1,5 +1,5 @@
-#include "jamc/core/cli_parse.hpp"
-#include "jamc/core/lex.hpp"
+#include "jamc/cli_parse.hpp"
+#include "jamc/lex.hpp"
 #include "jamc/helpers.hpp"
 
 auto main(int argc, char **argv) -> int {

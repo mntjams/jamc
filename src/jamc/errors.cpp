@@ -1,4 +1,4 @@
-#include "jamc/core/errors.hpp"
+#include "jamc/errors.hpp"
 
 namespace jamc::core {
 auto CliConfigError::ToString() const -> std::string_view {

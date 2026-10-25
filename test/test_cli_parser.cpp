@@ -1,5 +1,5 @@
-#include "jamc/core/cli_parse.hpp"
-#include "jamc/core/errors.hpp"
+#include "jamc/cli_parse.hpp"
+#include "jamc/errors.hpp"
 
 #include <array>
 #include <gmock/gmock.h>
