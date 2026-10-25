@@ -30,7 +30,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(src/jamc/)
+add_subdirectory(src/)
 if (BUILD_TESTING)
     add_subdirectory(test)
 endif()
