@@ -1,5 +1,5 @@
-#ifndef ERRORS_HPP
-#define ERRORS_HPP
+#ifndef JAMC_ERRORS_HPP
+#define JAMC_ERRORS_HPP
 
 #include <cstdint>
 #include <format>

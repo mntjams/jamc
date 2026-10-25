@@ -1,5 +1,5 @@
-#ifndef LEXER_HPP
-#define LEXER_HPP
+#ifndef JAMC_LEXER_HPP
+#define JAMC_LEXER_HPP
 
 #include <cstddef>
 #include <cstdint>

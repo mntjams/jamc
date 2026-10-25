@@ -1,5 +1,5 @@
-#ifndef HELPERS_HPP
-#define HELPERS_HPP
+#ifndef JAMC_HELPERS_HPP
+#define JAMC_HELPERS_HPP
 
 #include "jamc/errors.hpp"
 

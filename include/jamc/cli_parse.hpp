@@ -1,5 +1,5 @@
-#ifndef CLI_PARSE_HPP
-#define CLI_PARSE_HPP
+#ifndef JAMC_CLI_PARSE_HPP
+#define JAMC_CLI_PARSE_HPP
 
 #include "jamc/errors.hpp"
 
