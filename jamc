@@ -70,6 +70,7 @@ IN_FILE_E="${IN_FILE_NO_EXT}.i"
 IN_FILE_S="${IN_FILE_NO_EXT}.s"
 OUT_FILE="$IN_FILE_NO_EXT"
 
+# -P ensures no linemarkers emission
 "$UNDER_CC" -E -P "$IN_FILE" -o "$IN_FILE_E"
 STATUS=$?
 if [ "$STATUS" -ne 0 ]; then
