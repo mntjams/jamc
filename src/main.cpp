@@ -1,6 +1,6 @@
 #include "jamc/cli_parse.hpp"
-#include "jamc/lex.hpp"
 #include "jamc/helpers.hpp"
+#include "jamc/lex.hpp"
 
 auto main(int argc, char **argv) -> int {
     using ::jamc::CliConfig;

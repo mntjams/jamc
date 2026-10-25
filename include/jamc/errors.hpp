@@ -29,12 +29,12 @@ namespace std {
 template <>
 struct formatter<::jamc::CliConfigError> {
     template <typename ParseContext>
-    auto constexpr parse(ParseContext &ctx) { // NOLINT
+    auto constexpr parse(ParseContext &ctx) {  // NOLINT
         return ctx.begin();
     }
 
     template <typename FmtContext>
-    auto format(::jamc::CliConfigError const &err, // NOLINT
+    auto format(::jamc::CliConfigError const &err,  // NOLINT
                 FmtContext &ctx) const {
         return format_to(ctx.out(), "{}", err.ToString());
     }

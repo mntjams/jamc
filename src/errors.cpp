@@ -1,5 +1,7 @@
 #include "jamc/errors.hpp"
 
+#include <string_view>
+
 namespace jamc {
 auto CliConfigError::ToString() const -> std::string_view {
     using enum ErrorType;

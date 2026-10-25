@@ -4,9 +4,9 @@
 #include "jamc/errors.hpp"
 
 #include <concepts>
+#include <format>
 #include <print>
 #include <vector>
-#include <format>
 
 namespace jamc {
 template <typename E>

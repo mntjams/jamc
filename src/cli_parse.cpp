@@ -5,10 +5,10 @@
 #include <cstddef>
 #include <expected>
 #include <ranges>
+#include <span>
+#include <vector>
 
 namespace jamc {
-    template <typename T>
-        class H;
 auto CliConfig::Parse(int argc, char const *const *argv) noexcept
     -> ParseResults {
     using enum CliConfigError::ErrorType;
