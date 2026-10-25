@@ -5,7 +5,7 @@
 set -uo pipefail
 
 # My compiler name
-JAMC=build/src/jamc/jamc
+JAMC=build/src/jamc
 
 # Underlying compiler name
 # used for preprocessing and assembling
