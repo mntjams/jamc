@@ -13,6 +13,10 @@ add_executable(jamc-wrap
     main.cpp
 )
 
+# Executable is named jamc
+set_target_properties(jamc-wrap
+    PROPERTIES OUTPUT_NAME jamc)
+
 target_link_libraries(jamc-wrap
     PRIVATE jamc
     common-compiler-flags
