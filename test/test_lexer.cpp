@@ -58,7 +58,7 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
         "    return 2;\n"
         "}";
     auto lex_res = Lex(source);
-    EXPECT_THAT(Body(lex_res).tokens,
+    EXPECT_THAT(lex_res.tokens,
                 ElementsAre(TokenIs(Int, "int"),
                             TokenIs(Ident, "main"),
                             TokenIs(LParen, "("),
@@ -68,8 +68,22 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
                             TokenIs(Return, "return"),
                             TokenIs(Constant, "2"),
                             TokenIs(Semic, ";"),
-                            TokenIs(RBrace, "}")));
+                            TokenIs(RBrace, "}"),
+                            TokenIs(Eof)));
 }
 
-// TODO - Come up with lexer tests
+// TODO - Implement the following
+//      - Correct programs
+//          - Correct token type and name
+//          - Correct line/col num (including crazy formatted input)
+//          - The output is same for program with many whitespaces and  program with nearly no whitespaces
+//      - Incorrect programs - just lable all as "unexpected token"
+//          - 'a-a' - invalid identifier
+//          - '123abc` - invalid integer constant
+//      - Edge cases
+//          - 123;abc - shall produce constant 123, semic, identifier abc
+//          - abcvoid, abcreturn, abcint, voiding, returning, inting - shall be identifiers not keyword void, id ing (or keyword return, id ing)
+//          - Empty file should be just eof
+//          - keyword case sensitivity - Int, RETURN
+//          - constants prefix - 000000123
 }  // namespace
