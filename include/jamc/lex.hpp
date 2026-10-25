@@ -7,7 +7,7 @@
 #include <string_view>
 #include <vector>
 
-namespace jamc::core::lex {
+namespace jamc::lex {
 enum class TokenType : std::uint8_t {
     Eof,
     Ident,
@@ -36,6 +36,6 @@ public:
 };
 
 auto Lex(std::string_view source) -> LexResult;
-}  // namespace jamc::core::lex
+}  // namespace jamc::lex
 
 #endif

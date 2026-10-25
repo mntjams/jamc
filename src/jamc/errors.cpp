@@ -1,6 +1,6 @@
 #include "jamc/errors.hpp"
 
-namespace jamc::core {
+namespace jamc {
 auto CliConfigError::ToString() const -> std::string_view {
     using enum ErrorType;
     switch (type) {
@@ -14,4 +14,4 @@ auto CliConfigError::ToString() const -> std::string_view {
             return "UnknownCliConfigErrorType";
     }
 }
-}  // namespace jamc::core
+}  // namespace jamc

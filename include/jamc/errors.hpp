@@ -5,7 +5,7 @@
 #include <format>
 #include <string_view>
 
-namespace jamc::core {
+namespace jamc {
 struct Error {};
 
 struct CliConfigError : public Error {
@@ -23,18 +23,18 @@ public:
 
     auto ToString() const -> std::string_view;
 };
-}  // namespace jamc::core
+}  // namespace jamc
 
 namespace std {
 template <>
-struct formatter<::jamc::core::CliConfigError> {
+struct formatter<::jamc::CliConfigError> {
     template <typename ParseContext>
     auto constexpr parse(ParseContext &ctx) { // NOLINT
         return ctx.begin();
     }
 
     template <typename FmtContext>
-    auto format(::jamc::core::CliConfigError const &err, // NOLINT
+    auto format(::jamc::CliConfigError const &err, // NOLINT
                 FmtContext &ctx) const {
         return format_to(ctx.out(), "{}", err.ToString());
     }

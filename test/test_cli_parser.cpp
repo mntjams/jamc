@@ -7,13 +7,13 @@
 #include <string_view>
 
 namespace {
-using ::jamc::core::CliConfig;
-using ::jamc::core::CliConfigError;
+using ::jamc::CliConfig;
+using ::jamc::CliConfigError;
 
 using ::testing::Contains;
 using ::testing::Field;
 
-using enum ::jamc::core::CliConfigError::ErrorType;
+using enum ::jamc::CliConfigError::ErrorType;
 
 TEST(CliParser, OneSource) {
     std::array<char const *, 2UZ> args{"./jamc", "input.c"};

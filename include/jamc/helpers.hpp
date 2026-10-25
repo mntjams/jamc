@@ -10,7 +10,7 @@
 
 namespace jamc {
 template <typename E>
-    requires std::derived_from<E, core::Error> && std::formattable<E, char>
+    requires std::derived_from<E, Error> && std::formattable<E, char>
 void ReportErrors(std::vector<E> errs) {
     for (auto i{0UZ}; i < errs.size(); ++i) {
         std::print(stderr, "{}", errs[i]);

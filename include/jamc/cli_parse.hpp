@@ -8,7 +8,7 @@
 #include <string_view>
 #include <vector>
 
-namespace jamc::core {
+namespace jamc {
 /**
  * struct CliConfig - Represents the configuration parsed from CLI
  */
@@ -54,6 +54,6 @@ private:
 
     CliConfig() = default;
 };
-}  // namespace jamc::core
+}  // namespace jamc
 
 #endif

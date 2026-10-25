@@ -6,7 +6,7 @@
 #include <expected>
 #include <ranges>
 
-namespace jamc::core {
+namespace jamc {
     template <typename T>
         class H;
 auto CliConfig::Parse(int argc, char const *const *argv) noexcept
@@ -90,4 +90,4 @@ auto CliConfig::Valid() const noexcept -> ValidationResult {
 
     return std::unexpected{errs};
 }
-}  // namespace jamc::core
+}  // namespace jamc

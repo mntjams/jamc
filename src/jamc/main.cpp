@@ -3,9 +3,9 @@
 #include "jamc/helpers.hpp"
 
 auto main(int argc, char **argv) -> int {
-    using ::jamc::core::CliConfig;
+    using ::jamc::CliConfig;
     using ::jamc::ReportErrors;
-    using ::jamc::core::lex::Lex;
+    using ::jamc::lex::Lex;
 
     auto cli_parse_res{CliConfig::Parse(argc, argv)};
     // The driver script catches these errors already but checking for them

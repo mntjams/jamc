@@ -6,10 +6,10 @@
 #include <string>
 
 namespace {
-using ::jamc::core::lex::Lex;
-using ::jamc::core::lex::LexResult;
-using ::jamc::core::lex::Token;
-using ::jamc::core::lex::TokenType;
+using ::jamc::lex::Lex;
+using ::jamc::lex::LexResult;
+using ::jamc::lex::Token;
+using ::jamc::lex::TokenType;
 using enum TokenType;
 
 using ::testing::_;
