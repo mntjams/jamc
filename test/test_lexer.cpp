@@ -80,13 +80,15 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
 //      - Correct programs
 //          - Correct token type and name
 //          - Correct line/col num (including crazy formatted input)
-//          - The output is same for program with many whitespaces and  program with nearly no whitespaces
+//          - The output is same for program with many whitespaces and  program
+//          with nearly no whitespaces
 //      - Incorrect programs - just lable all as "unexpected token"
 //          - 'a-a' - invalid identifier
 //          - '123abc` - invalid integer constant
 //      - Edge cases
 //          - 123;abc - shall produce constant 123, semic, identifier abc
-//          - abcvoid, abcreturn, abcint, voiding, returning, inting - shall be identifiers not keyword void, id ing (or keyword return, id ing)
+//          - abcvoid, abcreturn, abcint, voiding, returning, inting - shall be
+//          identifiers not keyword void, id ing (or keyword return, id ing)
 //          - Empty file should be just eof
 //          - keyword case sensitivity - Int, RETURN
 //          - constants prefix - 000000123
