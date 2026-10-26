@@ -1,9 +1,10 @@
+#include "gmock/gmock.h"
 #include "jamc/lex.hpp"
 
 #include <cstddef>
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <string>
+#include <string_view>
 
 namespace {
 using ::jamc::lex::ConstToken;
@@ -16,9 +17,11 @@ using enum TokenType;
 
 using ::testing::_;
 using ::testing::AllOf;
+using ::testing::ContainerEq;
 using ::testing::ElementsAre;
 using ::testing::Field;
 using ::testing::Matcher;
+using ::testing::Pointwise;
 
 auto TokenMatches(Matcher<TokenType> const &type_matcher,
                   Matcher<std::size_t> const &line_matcher,
@@ -76,10 +79,48 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
                             TokenMatches(Eof, _, _)));
 }
 
+TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
+    std::string const source =
+        "     int   main(  \n"
+        "\n"
+        " void\n"
+        "   ) {return 2  \n"
+        "\n"
+        " ;}\n";
+    auto lex_res = Lex(source);
+    EXPECT_THAT(lex_res,
+                ElementsAre(TokenMatches(Int, 1, 6),
+                            IdTokenMatches(Ident, 1, 12, _),
+                            TokenMatches(LParen, 1, 16),
+                            TokenMatches(Void, 3, 2),
+                            TokenMatches(RParen, 4, 4),
+                            TokenMatches(LBrace, 4, 6),
+                            TokenMatches(Return, 4, 7),
+                            ConstTokenMatches(Constant, 4, 14, _),
+                            TokenMatches(Semic, 6, 2),
+                            TokenMatches(RBrace, 6, 3),
+                            TokenMatches(Eof, 7, 1)));
+}
+
+TEST(Lexer, SameTokensForDifferentWhitespacing) {
+    std::string const source_minimal_whitespace = "int main(void){return 2;}";
+    std::string const source_crazy_format =
+        "     int   main(  \n"
+        "\n"
+        " void\n"
+        "   ) {return 2  \n"
+        "\n"
+        " ;}\n";
+    auto lex_res_minimal_whitespace = Lex(source_minimal_whitespace);
+    auto lex_res_crazy_format = Lex(source_crazy_format);
+
+    EXPECT_THAT(Body(lex_res_minimal_whitespace).tokens,
+                Pointwise(/* TODO - Matcher that compares token types */,
+                          Body(lex_res_crazy_format).tokens));
+}
+
 // TODO - Implement the following
 //      - Correct programs
-//          - Correct token type and name
-//          - Correct line/col num (including crazy formatted input)
 //          - The output is same for program with many whitespaces and  program
 //          with nearly no whitespaces
 //      - Incorrect programs - just lable all as "unexpected token"
