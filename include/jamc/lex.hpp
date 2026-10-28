@@ -3,11 +3,16 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <string>
 #include <string_view>
 #include <vector>
 
 namespace jamc::lex {
+struct Token;
+enum class TokenType : std::uint8_t;
+
+// Diagnostic is represented as an Unknown token
+using LexResult = std::vector<Token>;
+
 enum class TokenType : std::uint8_t {
     Eof,
     Ident,
@@ -19,7 +24,8 @@ enum class TokenType : std::uint8_t {
     RParen,
     LBrace,
     RBrace,
-    Semic
+    Semic,
+    Unknown // Not matching anything
 };
 
 struct Token {
@@ -33,13 +39,6 @@ public:
     // register them and point to it for reference - this allows e.g.
     // faster comparisons - ptr vs ptr instead of string vs string)
     std::string_view lexeme{};
-};
-
-struct LexResult {
-public:
-    std::vector<Token> tokens{};
-    // TODO - Create vector of diagnostics (warnings/errors)
-    //      - One error should have 1. value (name) 2. position
 };
 
 auto Lex(std::string_view source) -> LexResult;

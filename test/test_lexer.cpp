@@ -30,13 +30,22 @@ auto TokenMatches(Matcher<TokenType> const &type_matcher,
                  Field("lexeme", &Token::lexeme, lexeme_matcher));
 }
 
+// TODO - One lexer test became a todo for parser tests:
+// constant with a prefix of zeros 00000000123
+
+TEST(Lexer, EmptySource) {
+    std::string_view constexpr source{};
+    auto lex_res = Lex(source);
+    EXPECT_THAT(lex_res, ElementsAre(TokenMatches(Eof, _, _, _)));
+}
+
 TEST(Lexer, CorrectTokensFromMinimalProgram) {
     std::string_view constexpr source =
         "int main(void) {\n"
         "    return 2;\n"
         "}";
     auto lex_res = Lex(source);
-    EXPECT_THAT(lex_res.tokens,
+    EXPECT_THAT(lex_res,
                 ElementsAre(TokenMatches(Int, _, _, _),
                             TokenMatches(Ident, _, _, "main"),
                             TokenMatches(LParen, _, _, _),
@@ -59,7 +68,7 @@ TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
         "\n"
         " ;}\n";
     auto lex_res = Lex(source);
-    EXPECT_THAT(lex_res.tokens,
+    EXPECT_THAT(lex_res,
                 ElementsAre(TokenMatches(Int, 1, 6, _),
                             TokenMatches(Ident, 1, 12, _),
                             TokenMatches(LParen, 1, 16, _),
@@ -77,7 +86,8 @@ TEST(Lexer, SameInputWithDifferentWhitespacing) {
     namespace rg = std::ranges;
     namespace rv = rg::views;
 
-    std::string_view constexpr source_minimal_whitespace = "int main(void){return 2;}";
+    std::string_view constexpr source_minimal_whitespace =
+        "int main(void){return 2;}";
     std::string_view constexpr source_crazy_format =
         "     int   main(  \n"
         "\n"
@@ -102,12 +112,11 @@ TEST(Lexer, SameInputWithDifferentWhitespacing) {
                                                       Eof};
 
     auto lex_res_minimal_token_types =
-        lex_res_minimal.tokens |
+        lex_res_minimal |
         rv::transform([](auto &&token) { return token.type; }) |
         rg::to<std::vector>();
     auto lex_res_crazy_token_types =
-        lex_res_crazy.tokens |
-        rv::transform([](auto &&token) { return token.type; }) |
+        lex_res_crazy | rv::transform([](auto &&token) { return token.type; }) |
         rg::to<std::vector>();
 
     EXPECT_THAT(lex_res_minimal_token_types, ContainerEq(correct_token_types));
