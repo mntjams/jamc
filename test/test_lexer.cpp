@@ -32,14 +32,6 @@ auto TokenMatches(Matcher<TokenType> const &type_matcher,
                  Field("lexeme", &Token::lexeme, lexeme_matcher));
 }
 
-template <typename LexResult>
-auto Body(LexResult &&res) -> LexResult {
-    if (!res.tokens.empty() && res.tokens.back().type == Eof) {
-        res.tokens.pop_back();
-    }
-    return res;
-}
-
 TEST(Lexer, CorrectTokensFromMinimalProgram) {
     std::string const source =
         "int main(void) {\n"
@@ -83,7 +75,7 @@ TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
                             TokenMatches(Eof, 7, 1, _)));
 }
 
-TEST(Lexer, SameTokensForDifferentWhitespacing) {
+TEST(Lexer, SameInputWithDifferentWhitespacing) {
     namespace rg = std::ranges;
     namespace rv = rg::views;
 
@@ -96,22 +88,33 @@ TEST(Lexer, SameTokensForDifferentWhitespacing) {
         "\n"
         " ;}\n";
 
-    auto lex_res_minimal_whitespace = Lex(source_minimal_whitespace);
-    auto lex_res_crazy_format = Lex(source_crazy_format);
+    auto lex_res_minimal = Lex(source_minimal_whitespace);
+    auto lex_res_crazy = Lex(source_crazy_format);
 
-    auto lex_res_min_whitespace_token_types =
-        Body(lex_res_minimal_whitespace).tokens |
+    auto correct_token_types = std::vector<TokenType>{Int,
+                                                      Ident,
+                                                      LParen,
+                                                      Void,
+                                                      RParen,
+                                                      LBrace,
+                                                      Return,
+                                                      Constant,
+                                                      Semic,
+                                                      RParen,
+                                                      Eof};
+
+    auto lex_res_minimal_token_types =
+        lex_res_minimal.tokens |
         rv::transform([](auto &&token) { return token.type; }) |
         rg::to<std::vector>();
     auto lex_res_crazy_token_types =
-        Body(lex_res_crazy_format).tokens |
+        lex_res_crazy.tokens |
         rv::transform([](auto &&token) { return token.type; }) |
         rg::to<std::vector>();
 
-    EXPECT_THAT(lex_res_min_whitespace_token_types,
-                ContainerEq(lex_res_crazy_token_types));
+    EXPECT_THAT(lex_res_minimal_token_types, ContainerEq(correct_token_types));
+    EXPECT_THAT(lex_res_crazy_token_types, ContainerEq(correct_token_types));
 }
-
 
 // TODO - Implement the following
 //      - Incorrect programs - just lable all as "unexpected token"
