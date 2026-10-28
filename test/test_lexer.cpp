@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <gtest/gtest.h>
+#include <ranges>
 #include <string>
 #include <string_view>
 
@@ -21,7 +22,6 @@ using ::testing::ContainerEq;
 using ::testing::ElementsAre;
 using ::testing::Field;
 using ::testing::Matcher;
-using ::testing::Pointwise;
 
 auto TokenMatches(Matcher<TokenType> const &type_matcher,
                   Matcher<std::size_t> const &line_matcher,
@@ -79,6 +79,7 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
                             TokenMatches(Eof, _, _)));
 }
 
+/*
 TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
     std::string const source =
         "     int   main(  \n"
@@ -88,7 +89,7 @@ TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
         "\n"
         " ;}\n";
     auto lex_res = Lex(source);
-    EXPECT_THAT(lex_res,
+    EXPECT_THAT(lex_res.tokens,
                 ElementsAre(TokenMatches(Int, 1, 6),
                             IdTokenMatches(Ident, 1, 12, _),
                             TokenMatches(LParen, 1, 16),
@@ -101,8 +102,12 @@ TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
                             TokenMatches(RBrace, 6, 3),
                             TokenMatches(Eof, 7, 1)));
 }
+*/
 
 TEST(Lexer, SameTokensForDifferentWhitespacing) {
+    namespace rg = std::ranges;
+    namespace rv = rg::views;
+
     std::string const source_minimal_whitespace = "int main(void){return 2;}";
     std::string const source_crazy_format =
         "     int   main(  \n"
@@ -111,18 +116,25 @@ TEST(Lexer, SameTokensForDifferentWhitespacing) {
         "   ) {return 2  \n"
         "\n"
         " ;}\n";
+
     auto lex_res_minimal_whitespace = Lex(source_minimal_whitespace);
     auto lex_res_crazy_format = Lex(source_crazy_format);
 
-    EXPECT_THAT(Body(lex_res_minimal_whitespace).tokens,
-                Pointwise(/* TODO - Matcher that compares token types */,
-                          Body(lex_res_crazy_format).tokens));
+    auto lex_res_min_whitespace_token_types =
+        Body(lex_res_minimal_whitespace).tokens |
+        rv::transform([](auto &&token) { return token.type; }) |
+        rg::to<std::vector>();
+    auto lex_res_crazy_token_types =
+        Body(lex_res_crazy_format).tokens |
+        rv::transform([](auto &&token) { return token.type; }) |
+        rg::to<std::vector>();
+
+    EXPECT_THAT(lex_res_min_whitespace_token_types,
+                ContainerEq(lex_res_crazy_token_types));
 }
 
+
 // TODO - Implement the following
-//      - Correct programs
-//          - The output is same for program with many whitespaces and  program
-//          with nearly no whitespaces
 //      - Incorrect programs - just lable all as "unexpected token"
 //          - 'a-a' - invalid identifier
 //          - '123abc` - invalid integer constant

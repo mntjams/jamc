@@ -47,6 +47,7 @@ public:
 
 struct LexResult {
 public:
+    // TODO - Make it a vector of variants
     std::vector<Token> tokens{};
     // TODO - Create vector of diagnostics (warnings/errors)
     //      - One error should have 1. value (name) 2. position
