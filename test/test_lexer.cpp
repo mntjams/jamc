@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "jamc/lex.hpp"
 
+#include <array>
 #include <cstddef>
 #include <gtest/gtest.h>
 #include <ranges>
@@ -123,14 +124,50 @@ TEST(Lexer, SameInputWithDifferentWhitespacing) {
     EXPECT_THAT(lex_res_crazy_token_types, ContainerEq(correct_token_types));
 }
 
-// TODO - Implement the following
-//      - Incorrect programs - just lable all as "unexpected token"
-//          - '123abc` - invalid integer constant
-//      - Edge cases
-//          - 123;abc - shall produce constant 123, semic, identifier abc
-//          - abcvoid, abcreturn, abcint, voiding, returning, inting - shall be
-//          identifiers not keyword void, id ing (or keyword return, id ing)
-//          - Empty file should be just eof
-//          - keyword case sensitivity - Int, RETURN
-//          - constants prefix - 000000123
+TEST(Lexer, InvalidIntegerConstant) {
+    std::string_view constexpr source = "123abc";
+    auto lex_res = Lex(source);
+    EXPECT_THAT(lex_res,
+                ElementsAre(TokenMatches(Unknown, _, _, "123abc"),
+                            TokenMatches(Eof, _, _, _)));
+}
+
+TEST(Lexer, ConstantSemicIdent) {
+    std::string_view constexpr source = "123;abc";
+    auto lex_res = Lex(source);
+    EXPECT_THAT(lex_res,
+                ElementsAre(TokenMatches(Constant, _, _, "123"),
+                            TokenMatches(Ident, _, _, "abc"),
+                            TokenMatches(Eof, _, _, _)));
+}
+
+TEST(Lexer, IdentifiersWithKeywordSuffixes) {
+    std::array<std::string_view, 5> idents{"abcvoid", "abcreturn", "abcint"};
+    for (auto &&ident : idents) {
+        auto lex_res = Lex(ident);
+        EXPECT_THAT(lex_res,
+                    ElementsAre(TokenMatches(Ident, _, _, ident),
+                                TokenMatches(Eof, _, _, _)));
+    }
+}
+
+TEST(Lexer, IdentifiersWithKeywordPrefixes) {
+    std::array<std::string_view, 5> idents{"voiding", "returning", "inting"};
+    for (auto &&ident : idents) {
+        auto lex_res = Lex(ident);
+        EXPECT_THAT(lex_res,
+                    ElementsAre(TokenMatches(Ident, _, _, ident),
+                                TokenMatches(Eof, _, _, _)));
+    }
+}
+
+TEST(Lexer, KeywordsAreCaseSensitive) {
+    std::array<std::string_view, 5> idents{"INT", "Return", "vOiD"};
+    for (auto &&ident : idents) {
+        auto lex_res = Lex(ident);
+        EXPECT_THAT(lex_res,
+                    ElementsAre(TokenMatches(Ident, _, _, ident),
+                                TokenMatches(Eof, _, _, _)));
+    }
+}
 }  // namespace
