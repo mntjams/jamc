@@ -16,4 +16,14 @@ auto CliConfigError::ToString() const -> std::string_view {
             return "UnknownCliConfigErrorType";
     }
 }
+
+auto FileReadError::ToString() const -> std::string_view {
+    using enum ErrorType;
+    switch (type) {
+        case UnableToOpenFileError:
+            return "UnableToOpenFileError";
+        default:
+            return "UnknownFileReadErrorType";
+    }
+}
 }  // namespace jamc

@@ -2,8 +2,11 @@
 #include "jamc/helpers.hpp"
 #include "jamc/lex.hpp"
 
+#include <string>
+
 auto main(int argc, char **argv) -> int {
     using ::jamc::CliConfig;
+    using ::jamc::ReadFile;
     using ::jamc::ReportErrors;
     using ::jamc::lex::Lex;
 
@@ -15,7 +18,13 @@ auto main(int argc, char **argv) -> int {
         return 1;
     }
 
-    (void)Lex("");
+    auto const input_source =
+        ReadFile(std::string{cli_parse_res->InputSource()});
+    if (!input_source.has_value()) {
+        ReportError(input_source.error());
+    }
+
+    Lex(input_source.value());
 
     if (cli_parse_res->StopAfterLex()) {
         return 0;

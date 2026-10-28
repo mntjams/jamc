@@ -19,7 +19,20 @@ public:
     ErrorType type{};
 
     explicit CliConfigError(ErrorType t)
-        : type(t) {};
+        : type{t} {};
+
+    auto ToString() const -> std::string_view;
+};
+
+struct FileReadError : public Error {
+public:
+    enum class ErrorType : std::uint8_t {
+        UnableToOpenFileError
+    };
+
+    ErrorType type{};
+
+    explicit FileReadError(ErrorType t) : type{t} {};
 
     auto ToString() const -> std::string_view;
 };
@@ -35,6 +48,20 @@ struct formatter<::jamc::CliConfigError> {
 
     template <typename FmtContext>
     auto format(::jamc::CliConfigError const &err,  // NOLINT
+                FmtContext &ctx) const {
+        return format_to(ctx.out(), "{}", err.ToString());
+    }
+};
+
+template <>
+struct formatter<::jamc::FileReadError> {
+    template <typename ParseContext>
+    auto constexpr parse(ParseContext &ctx) {  // NOLINT
+        return ctx.begin();
+    }
+
+    template <typename FmtContext>
+    auto format(::jamc::FileReadError const &err,  // NOLINT
                 FmtContext &ctx) const {
         return format_to(ctx.out(), "{}", err.ToString());
     }
