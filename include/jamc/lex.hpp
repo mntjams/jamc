@@ -25,7 +25,7 @@ enum class TokenType : std::uint8_t {
     LBrace,
     RBrace,
     Semic,
-    Unknown // Not matching anything
+    Unknown  // Not matching anything
 };
 
 struct Token {

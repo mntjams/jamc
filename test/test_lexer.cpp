@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <ranges>
 #include <string_view>
+#include <vector>
 
 namespace {
 using ::jamc::lex::Lex;
@@ -154,7 +155,8 @@ TEST(Lexer, ConstantSemicIdent) {
 }
 
 TEST(Lexer, IdentifiersWithKeywordSuffixes) {
-    std::array<std::string_view, 5> idents{"abcvoid", "abcreturn", "abcint"};
+    std::array<std::string_view, 5> const idents{
+        "abcvoid", "abcreturn", "abcint"};
     for (auto &&ident : idents) {
         auto lex_res = Lex(ident);
         EXPECT_THAT(lex_res,
@@ -164,7 +166,8 @@ TEST(Lexer, IdentifiersWithKeywordSuffixes) {
 }
 
 TEST(Lexer, IdentifiersWithKeywordPrefixes) {
-    std::array<std::string_view, 5> idents{"voiding", "returning", "inting"};
+    std::array<std::string_view, 5> const idents{
+        "voiding", "returning", "inting"};
     for (auto &&ident : idents) {
         auto lex_res = Lex(ident);
         EXPECT_THAT(lex_res,
@@ -174,7 +177,7 @@ TEST(Lexer, IdentifiersWithKeywordPrefixes) {
 }
 
 TEST(Lexer, KeywordsAreCaseSensitive) {
-    std::array<std::string_view, 5> idents{"INT", "Return", "vOiD"};
+    std::array<std::string_view, 5> const idents{"INT", "Return", "vOiD"};
     for (auto &&ident : idents) {
         auto lex_res = Lex(ident);
         EXPECT_THAT(lex_res,
