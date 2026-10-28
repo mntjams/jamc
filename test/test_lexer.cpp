@@ -118,7 +118,6 @@ TEST(Lexer, SameInputWithDifferentWhitespacing) {
 
 // TODO - Implement the following
 //      - Incorrect programs - just lable all as "unexpected token"
-//          - 'a-a' - invalid identifier
 //          - '123abc` - invalid integer constant
 //      - Edge cases
 //          - 123;abc - shall produce constant 123, semic, identifier abc
