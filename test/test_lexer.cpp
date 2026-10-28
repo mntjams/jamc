@@ -4,12 +4,10 @@
 #include <cstddef>
 #include <gtest/gtest.h>
 #include <ranges>
-#include <string>
 #include <string_view>
 
 namespace {
 using ::jamc::lex::Lex;
-using ::jamc::lex::LexResult;
 using ::jamc::lex::Token;
 using ::jamc::lex::TokenType;
 using enum TokenType;
@@ -33,7 +31,7 @@ auto TokenMatches(Matcher<TokenType> const &type_matcher,
 }
 
 TEST(Lexer, CorrectTokensFromMinimalProgram) {
-    std::string const source =
+    std::string_view constexpr source =
         "int main(void) {\n"
         "    return 2;\n"
         "}";
@@ -53,7 +51,7 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
 }
 
 TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
-    std::string const source =
+    std::string_view constexpr source =
         "     int   main(  \n"
         "\n"
         " void\n"
@@ -79,8 +77,8 @@ TEST(Lexer, SameInputWithDifferentWhitespacing) {
     namespace rg = std::ranges;
     namespace rv = rg::views;
 
-    std::string const source_minimal_whitespace = "int main(void){return 2;}";
-    std::string const source_crazy_format =
+    std::string_view constexpr source_minimal_whitespace = "int main(void){return 2;}";
+    std::string_view constexpr source_crazy_format =
         "     int   main(  \n"
         "\n"
         " void\n"
