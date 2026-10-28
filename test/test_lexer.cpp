@@ -34,6 +34,18 @@ auto TokenMatches(Matcher<TokenType> const &type_matcher,
 // TODO - One lexer test became a todo for parser tests:
 // constant with a prefix of zeros 00000000123
 
+// TODO - When the compiler gets more complicated create
+// golden lexer tests. Have input sources in test/ and
+// the expected golden files (stringified output of lexer).
+// Implement a stringify method for the lexer output
+// and compare stringified output with golden files.
+// Allow rewriting of golden files with some flag -
+// when a compiler changes I don't need to modify tens of
+// test cases but just regenerate the golden files to match
+// the current output.
+// However this is dangerous on its own so keep these unit tests
+// as well.
+
 TEST(Lexer, EmptySource) {
     std::string_view constexpr source{};
     auto lex_res = Lex(source);
