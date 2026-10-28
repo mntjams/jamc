@@ -27,27 +27,16 @@ public:
     TokenType type{};
     std::size_t line{};
     std::size_t col{};
-};
-
-/**
- * struct IdToken - Holds an identifier
- */
-struct IdToken : public Token {
-public:
-    std::string_view name{};
-};
-
-/**
- * struct ConstToken - Holds a constant int value
- */
-struct ConstToken : public Token {
-public:
-    int val{};
+    // NOTE - This may later be replaced/expanded to support
+    // 'interning' (variant of string_view and InternerInfo*)
+    // (have one table of identifiers into which we
+    // register them and point to it for reference - this allows e.g.
+    // faster comparisons - ptr vs ptr instead of string vs string)
+    std::string_view lexeme{};
 };
 
 struct LexResult {
 public:
-    // TODO - Make it a vector of variants
     std::vector<Token> tokens{};
     // TODO - Create vector of diagnostics (warnings/errors)
     //      - One error should have 1. value (name) 2. position

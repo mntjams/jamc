@@ -8,8 +8,6 @@
 #include <string_view>
 
 namespace {
-using ::jamc::lex::ConstToken;
-using ::jamc::lex::IdToken;
 using ::jamc::lex::Lex;
 using ::jamc::lex::LexResult;
 using ::jamc::lex::Token;
@@ -25,35 +23,18 @@ using ::testing::Matcher;
 
 auto TokenMatches(Matcher<TokenType> const &type_matcher,
                   Matcher<std::size_t> const &line_matcher,
-                  Matcher<std::size_t> const &col_matcher)
+                  Matcher<std::size_t> const &col_matcher,
+                  Matcher<std::string_view> const &lexeme_matcher)
     -> Matcher<Token const &> {
     return AllOf(Field("type", &Token::type, type_matcher),
                  Field("line", &Token::line, line_matcher),
-                 Field("col", &Token::col, col_matcher));
+                 Field("col", &Token::col, col_matcher),
+                 Field("lexeme", &Token::lexeme, lexeme_matcher));
 }
 
-auto IdTokenMatches(Matcher<TokenType> const &type_matcher,
-                    Matcher<std::size_t> const &line_matcher,
-                    Matcher<std::size_t> const &col_matcher,
-                    Matcher<std::string_view> const &name_matcher)
-    -> Matcher<IdToken const &> {
-    // Match normal token + an ID name
-    return AllOf(TokenMatches(type_matcher, line_matcher, col_matcher),
-                 Field("name", &IdToken::name, name_matcher));
-}
-
-auto ConstTokenMatches(Matcher<TokenType> const &type_matcher,
-                       Matcher<std::size_t> const &line_matcher,
-                       Matcher<std::size_t> const &col_matcher,
-                       Matcher<int> const &val_matcher)
-    -> Matcher<ConstToken const &> {
-    // Match normal token + an ID name
-    return AllOf(TokenMatches(type_matcher, line_matcher, col_matcher),
-                 Field("val", &ConstToken::val, val_matcher));
-}
-
-auto Body(LexResult res) -> LexResult {
-    if (res.tokens.back().type == Eof) {
+template <typename LexResult>
+auto Body(LexResult &&res) -> LexResult {
+    if (!res.tokens.empty() && res.tokens.back().type == Eof) {
         res.tokens.pop_back();
     }
     return res;
@@ -66,20 +47,19 @@ TEST(Lexer, CorrectTokensFromMinimalProgram) {
         "}";
     auto lex_res = Lex(source);
     EXPECT_THAT(lex_res.tokens,
-                ElementsAre(TokenMatches(Int, _, _),
-                            IdTokenMatches(Ident, _, _, "main"),
-                            TokenMatches(LParen, _, _),
-                            TokenMatches(Void, _, _),
-                            TokenMatches(RParen, _, _),
-                            TokenMatches(LBrace, _, _),
-                            TokenMatches(Return, _, _),
-                            ConstTokenMatches(Constant, _, _, 2),
-                            TokenMatches(Semic, _, _),
-                            TokenMatches(RBrace, _, _),
-                            TokenMatches(Eof, _, _)));
+                ElementsAre(TokenMatches(Int, _, _, _),
+                            TokenMatches(Ident, _, _, "main"),
+                            TokenMatches(LParen, _, _, _),
+                            TokenMatches(Void, _, _, _),
+                            TokenMatches(RParen, _, _, _),
+                            TokenMatches(LBrace, _, _, _),
+                            TokenMatches(Return, _, _, _),
+                            TokenMatches(Constant, _, _, "2"),
+                            TokenMatches(Semic, _, _, _),
+                            TokenMatches(RBrace, _, _, _),
+                            TokenMatches(Eof, _, _, _)));
 }
 
-/*
 TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
     std::string const source =
         "     int   main(  \n"
@@ -90,19 +70,18 @@ TEST(Lexer, CrazyButCorrectFormattingTokenPosition) {
         " ;}\n";
     auto lex_res = Lex(source);
     EXPECT_THAT(lex_res.tokens,
-                ElementsAre(TokenMatches(Int, 1, 6),
-                            IdTokenMatches(Ident, 1, 12, _),
-                            TokenMatches(LParen, 1, 16),
-                            TokenMatches(Void, 3, 2),
-                            TokenMatches(RParen, 4, 4),
-                            TokenMatches(LBrace, 4, 6),
-                            TokenMatches(Return, 4, 7),
-                            ConstTokenMatches(Constant, 4, 14, _),
-                            TokenMatches(Semic, 6, 2),
-                            TokenMatches(RBrace, 6, 3),
-                            TokenMatches(Eof, 7, 1)));
+                ElementsAre(TokenMatches(Int, 1, 6, _),
+                            TokenMatches(Ident, 1, 12, _),
+                            TokenMatches(LParen, 1, 16, _),
+                            TokenMatches(Void, 3, 2, _),
+                            TokenMatches(RParen, 4, 4, _),
+                            TokenMatches(LBrace, 4, 6, _),
+                            TokenMatches(Return, 4, 7, _),
+                            TokenMatches(Constant, 4, 14, _),
+                            TokenMatches(Semic, 6, 2, _),
+                            TokenMatches(RBrace, 6, 3, _),
+                            TokenMatches(Eof, 7, 1, _)));
 }
-*/
 
 TEST(Lexer, SameTokensForDifferentWhitespacing) {
     namespace rg = std::ranges;
