@@ -80,8 +80,7 @@ auto Lex(std::string_view source) -> LexResult {
             ReadIdentifierOrKeyword(cursor);
         } else if (std::isdigit(cur_ch) != 0) {
             ReadConstant(cursor);
-        } else if (cur_ch == '(' || cur_ch == ')' || cur_ch == '{' ||
-                   cur_ch == '}' || cur_ch == ';') {
+        } else if (std::ispunct(cur_ch) != 0) {
             ReadPunctuator(cursor);
         } else {
             res.emplace_back(TokenType::Unknown, cursor.line, cursor.col, "");
