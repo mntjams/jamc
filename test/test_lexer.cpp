@@ -122,7 +122,7 @@ TEST(Lexer, SameInputWithDifferentWhitespacing) {
                                                       Return,
                                                       Constant,
                                                       Semic,
-                                                      RParen,
+                                                      RBrace,
                                                       Eof};
 
     auto lex_res_minimal_token_types =
@@ -155,7 +155,7 @@ TEST(Lexer, ConstantSemicIdent) {
 }
 
 TEST(Lexer, IdentifiersWithKeywordSuffixes) {
-    std::array<std::string_view, 5> const idents{
+    std::array<std::string_view, 3> const idents{
         "abcvoid", "abcreturn", "abcint"};
     for (auto &&ident : idents) {
         auto lex_res = Lex(ident);
@@ -166,7 +166,7 @@ TEST(Lexer, IdentifiersWithKeywordSuffixes) {
 }
 
 TEST(Lexer, IdentifiersWithKeywordPrefixes) {
-    std::array<std::string_view, 5> const idents{
+    std::array<std::string_view, 3> const idents{
         "voiding", "returning", "inting"};
     for (auto &&ident : idents) {
         auto lex_res = Lex(ident);
@@ -177,7 +177,7 @@ TEST(Lexer, IdentifiersWithKeywordPrefixes) {
 }
 
 TEST(Lexer, KeywordsAreCaseSensitive) {
-    std::array<std::string_view, 5> const idents{"INT", "Return", "vOiD"};
+    std::array<std::string_view, 3> const idents{"INT", "Return", "vOiD"};
     for (auto &&ident : idents) {
         auto lex_res = Lex(ident);
         EXPECT_THAT(lex_res,
