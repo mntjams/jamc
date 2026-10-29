@@ -26,13 +26,12 @@ public:
 
 struct FileReadError : public Error {
 public:
-    enum class ErrorType : std::uint8_t {
-        UnableToOpenFileError
-    };
+    enum class ErrorType : std::uint8_t { UnableToOpenFileError };
 
     ErrorType type{};
 
-    explicit FileReadError(ErrorType t) : type{t} {};
+    explicit FileReadError(ErrorType t)
+        : type{t} {};
 
     auto ToString() const -> std::string_view;
 };

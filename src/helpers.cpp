@@ -2,8 +2,11 @@
 
 #include "jamc/errors.hpp"
 
+#include <expected>
 #include <filesystem>
 #include <fstream>
+#include <ios>
+#include <string>
 
 namespace jamc {
 auto ReadFile(std::filesystem::path const &filename)
