@@ -5,6 +5,7 @@
 
 #include <concepts>
 #include <expected>
+#include <filesystem>
 #include <format>
 #include <print>
 #include <string>
@@ -37,7 +38,7 @@ void ReportError(E const &err) {
  * because the OS requires null terminated filename
  * (string_view doesn't need to be null terminated).
  */
-auto ReadFile(std::string const &filename)
+auto ReadFile(std::filesystem::path const &filename)
     -> std::expected<std::string, FileReadError>;
 }  // namespace jamc
 
