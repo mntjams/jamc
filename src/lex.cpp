@@ -19,10 +19,16 @@ public:
     std::size_t col{1};
 
     auto AtEnd() const -> bool { return pos == source.length(); }
+
+    auto Peek(std::size_t lookeahed) const -> auto const & {
+        return source[pos + lookeahed];
+    }
+
+    auto Current() const -> auto const & { return Peek(0); }
 };
 
 void ReadWhitespace(Cursor &cursor) {
-    if (cursor.source[cursor.pos] == '\n') {
+    if (cursor.Current() == '\n') {
         ++cursor.line;
         cursor.col = 1;
     }
