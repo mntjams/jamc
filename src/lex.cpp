@@ -155,7 +155,8 @@ auto ReadPunctuator(Cursor &cursor) -> Token {
     ++cursor.col;
     return Token{.type = type,
                  .line = cursor.line,
-                 .col = cursor.col,
+                 // The col is already incremented!
+                 .col = cursor.col - 1,
                  // The pos is already incremented!
                  .lexeme = cursor.source.substr(cursor.pos - 1, 1)};
 }
