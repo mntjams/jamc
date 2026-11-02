@@ -42,6 +42,42 @@ public:
 };
 
 auto Lex(std::string_view source) -> LexResult;
+
+auto ToString(TokenType tt) -> std::string_view;
 }  // namespace jamc::lex
 
+namespace std {
+template <>
+struct formatter<::jamc::lex::Token> {
+    template <typename ParseContext>
+    auto constexpr parse(ParseContext &ctx) {  // NOLINT
+        return ctx.begin();
+    }
+
+    template <typename FmtContext>
+    auto format(::jamc::lex::Token const &token,  // NOLINT
+                FmtContext &ctx) const {
+        return format_to(ctx.out(),
+                         "\n(type={}, line={}, col={}, lexeme={})",
+                         token.type,
+                         token.line,
+                         token.col,
+                         token.lexeme);
+    }
+};
+
+template <>
+struct formatter<::jamc::lex::TokenType> {
+    template <typename ParseContext>
+    auto constexpr parse(ParseContext &ctx) {  // NOLINT
+        return ctx.begin();
+    }
+
+    template <typename FmtContext>
+    auto format(::jamc::lex::TokenType const &token_type,  // NOLINT
+                FmtContext &ctx) const {
+        return format_to(ctx.out(), "{}", ToString(token_type));
+    }
+};
+}  // namespace std
 #endif
