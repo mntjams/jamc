@@ -114,7 +114,7 @@ auto ReadConstant(Cursor &cursor) -> Token {
     // Check that everything until the word boundary is a digit
     for (; !IsWordBoundary(cursor.source, cursor.pos);
          ++cursor.pos, ++cursor.col) {
-        if (std::isdigit(cursor.Current()) != 0) {
+        if (std::isdigit(cursor.Current()) == 0) {
             type = Unknown;
         }
     }
