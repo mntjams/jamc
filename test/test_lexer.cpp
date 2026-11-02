@@ -150,6 +150,7 @@ TEST(Lexer, ConstantSemicIdent) {
     auto lex_res = Lex(source);
     EXPECT_THAT(lex_res,
                 ElementsAre(TokenMatches(Constant, _, _, "123"),
+                            TokenMatches(Semic, _, _, _),
                             TokenMatches(Ident, _, _, "abc"),
                             TokenMatches(Eof, _, _, _)));
 }
