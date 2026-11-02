@@ -2,6 +2,8 @@
 #include "jamc/helpers.hpp"
 #include "jamc/lex.hpp"
 
+#include <algorithm>
+#include <print>
 #include <string>
 
 auto main(int argc, char **argv) -> int {
@@ -9,6 +11,8 @@ auto main(int argc, char **argv) -> int {
     using ::jamc::ReadFile;
     using ::jamc::ReportErrors;
     using ::jamc::lex::Lex;
+
+    namespace rg = std::ranges;
 
     auto cli_parse_res{CliConfig::Parse(argc, argv)};
     // The driver script catches these errors already but checking for them
@@ -24,8 +28,16 @@ auto main(int argc, char **argv) -> int {
         ReportError(input_source.error());
     }
 
-    Lex(input_source.value());
-
+    auto lex_res = Lex(input_source.value());
+    // NOTE - This does additional O(logn) work.
+    // If this becomes a performance issue in the future,
+    // detect failures during lexing (insertion of Unknown token).
+    auto lex_res_valid = rg::binary_search(
+        lex_res, jamc::lex::TokenType::Unknown, {}, &jamc::lex::Token::type);
+    // std::println("{}", lex_res);
+    if (!lex_res_valid) {
+        return 1;
+    }
     if (cli_parse_res->StopAfterLex()) {
         return 0;
     }
