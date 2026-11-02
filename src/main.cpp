@@ -29,13 +29,13 @@ auto main(int argc, char **argv) -> int {
     }
 
     auto lex_res = Lex(input_source.value());
-    // NOTE - This does additional O(logn) work.
+    // NOTE - This does additional O(n) work.
     // If this becomes a performance issue in the future,
     // detect failures during lexing (insertion of Unknown token).
-    auto lex_res_valid = rg::binary_search(
-        lex_res, jamc::lex::TokenType::Unknown, {}, &jamc::lex::Token::type);
+    auto unknown_token_it = rg::find(
+        lex_res, jamc::lex::TokenType::Unknown, &jamc::lex::Token::type);
     // std::println("{}", lex_res);
-    if (!lex_res_valid) {
+    if (unknown_token_it != lex_res.cend()) {
         return 1;
     }
     if (cli_parse_res->StopAfterLex()) {
