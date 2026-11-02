@@ -88,10 +88,14 @@ auto ReadIdentifierOrKeyword(Cursor &cursor) -> Token {
     }
 
     auto lexeme = cursor.source.substr(begin_pos, cursor.pos - begin_pos);
-    auto const *it = rg::lower_bound(
+    auto kw_exists = rg::binary_search(
         KeywordTable, lexeme, {}, &decltype(KeywordTable)::value_type::first);
-    if (it != KeywordTable.cend()) {
-        type = it->second;
+    if (kw_exists) {
+        type = rg::lower_bound(KeywordTable,
+                               lexeme,
+                               {},
+                               &decltype(KeywordTable)::value_type::first)
+                   ->second;
     }
 
     return Token{
