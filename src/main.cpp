@@ -3,7 +3,6 @@
 #include "jamc/lex.hpp"
 
 #include <algorithm>
-#include <print>
 #include <string>
 
 auto main(int argc, char **argv) -> int {

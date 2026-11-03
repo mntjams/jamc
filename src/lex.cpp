@@ -192,36 +192,4 @@ auto Lex(std::string_view source) -> LexResult {
 
     return res;
 }
-
-auto ToString(TokenType tt) -> std::string_view {
-    using enum TokenType;
-    switch (tt) {
-        case Eof:
-            return "Eof";
-        case Ident:
-            return "Ident";
-        case Constant:
-            return "Constant";
-        case Void:
-            return "Void";
-        case Int:
-            return "Int";
-        case Return:
-            return "Return";
-        case LParen:
-            return "LParen";
-        case RParen:
-            return "RParen";
-        case LBrace:
-            return "LBrace";
-        case RBrace:
-            return "RBrace";
-        case Semic:
-            return "Semic";
-        case Unknown:
-            return "Unknown";
-        default:
-            return "UnknownTokenType";
-    }
-}
 }  // namespace jamc::lex

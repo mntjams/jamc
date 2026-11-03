@@ -1,6 +1,8 @@
 #ifndef JAMC_LEXER_HPP
 #define JAMC_LEXER_HPP
 
+#include "jamc/helpers.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
@@ -42,8 +44,6 @@ public:
 };
 
 auto Lex(std::string_view source) -> LexResult;
-
-auto ToString(TokenType tt) -> std::string_view;
 }  // namespace jamc::lex
 
 namespace std {
@@ -76,6 +76,9 @@ struct formatter<::jamc::lex::TokenType> {
     template <typename FmtContext>
     auto format(::jamc::lex::TokenType const &token_type,  // NOLINT
                 FmtContext &ctx) const {
+        // Typedef required, ADL won't find it because it sits
+        // one level above TokenType
+        using ::jamc::ToString;
         return format_to(ctx.out(), "{}", ToString(token_type));
     }
 };

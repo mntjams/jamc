@@ -1,6 +1,8 @@
 #ifndef JAMC_ERRORS_HPP
 #define JAMC_ERRORS_HPP
 
+#include "jamc/helpers.hpp"
+
 #include <cstdint>
 #include <format>
 #include <string_view>
@@ -20,8 +22,6 @@ public:
 
     explicit CliConfigError(ErrorType t)
         : type{t} {};
-
-    auto ToString() const -> std::string_view;
 };
 
 struct FileReadError : public Error {
@@ -32,8 +32,6 @@ public:
 
     explicit FileReadError(ErrorType t)
         : type{t} {};
-
-    auto ToString() const -> std::string_view;
 };
 }  // namespace jamc
 
@@ -48,7 +46,7 @@ struct formatter<::jamc::CliConfigError> {
     template <typename FmtContext>
     auto format(::jamc::CliConfigError const &err,  // NOLINT
                 FmtContext &ctx) const {
-        return format_to(ctx.out(), "{}", err.ToString());
+        return format_to(ctx.out(), "{}", ToString(err.type));
     }
 };
 
@@ -62,7 +60,7 @@ struct formatter<::jamc::FileReadError> {
     template <typename FmtContext>
     auto format(::jamc::FileReadError const &err,  // NOLINT
                 FmtContext &ctx) const {
-        return format_to(ctx.out(), "{}", err.ToString());
+        return format_to(ctx.out(), "{}", ToString(err.type));
     }
 };
 }  // namespace std
