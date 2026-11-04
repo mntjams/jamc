@@ -53,7 +53,7 @@ public:
     auto Current() const -> auto const & { return Peek(0); }
 };
 
-void ReadWhitespace(Cursor &cursor) {
+void ReadWhitespace(Cursor &cursor) noexcept {
     if (cursor.Current() == '\n') {
         ++cursor.line;
         // Incremented later to start at 1
@@ -63,19 +63,19 @@ void ReadWhitespace(Cursor &cursor) {
     ++cursor.pos;
 }
 
-auto IsWord(char c) -> bool { return std::isalnum(c) != 0 || c == '_'; }
+auto IsWord(char c) noexcept -> bool { return std::isalnum(c) != 0 || c == '_'; }
 
 /**
  * @brief Is there a word boundary between sv[idx - 1] and sv[idx].
  * Accounts for (idx - 1) or idx being out of range.
  */
-auto IsWordBoundary(std::string_view sv, std::size_t idx) -> bool {
+auto IsWordBoundary(std::string_view sv, std::size_t idx) noexcept -> bool {
     bool const is_prev_word = (idx > 0) && IsWord(sv[idx - 1]);
     bool const is_curr_word = (idx < sv.size()) && IsWord(sv[idx]);
     return is_prev_word != is_curr_word;
 }
 
-auto ReadIdentifierOrKeyword(Cursor &cursor) -> Token {
+auto ReadIdentifierOrKeyword(Cursor &cursor) noexcept -> Token {
     TokenType type = Ident;
     std::size_t const begin_pos{cursor.pos};
     std::size_t const begin_col{cursor.col};
@@ -102,7 +102,7 @@ auto ReadIdentifierOrKeyword(Cursor &cursor) -> Token {
         .type = type, .line = cursor.line, .col = begin_col, .lexeme = lexeme};
 }
 
-auto ReadConstant(Cursor &cursor) -> Token {
+auto ReadConstant(Cursor &cursor) noexcept -> Token {
     // Can change later in the function if lexing fails
     TokenType type{Constant};
     std::size_t const begin_pos{cursor.pos};
@@ -130,7 +130,7 @@ auto ReadConstant(Cursor &cursor) -> Token {
  * @brief Reads "( ) { } ;"
  * NOTE - Add other punctuators when their lexing is supported
  */
-auto ReadPunctuator(Cursor &cursor) -> Token {
+auto ReadPunctuator(Cursor &cursor) noexcept -> Token {
     TokenType type{};
     switch (cursor.Current()) {
         case '(':
@@ -164,7 +164,7 @@ auto ReadPunctuator(Cursor &cursor) -> Token {
 }  // namespace
 
 namespace jamc::lex {
-auto Lex(std::string_view source) -> LexResult {
+auto Lex(std::string_view source) noexcept -> LexResult {
     LexResult res{};
     Cursor cursor{.source = source};
 

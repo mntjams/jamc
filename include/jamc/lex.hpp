@@ -43,7 +43,7 @@ public:
     std::string_view lexeme{};
 };
 
-auto Lex(std::string_view source) -> LexResult;
+auto Lex(std::string_view source) noexcept -> LexResult;
 }  // namespace jamc::lex
 
 namespace std {
