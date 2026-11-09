@@ -3,6 +3,7 @@
 #include "jamc/errors.hpp"
 
 #include <cstddef>
+#include <cstdint>
 #include <expected>
 #include <ranges>
 #include <span>
@@ -26,8 +27,8 @@ auto CliConfig::Parse(int argc, char const *const *argv) noexcept
         rv::transform([](char const *arg) { return std::string_view{arg}; });
 
     CliConfig c{};
-    // Use long instead of size_t cuz args indexes with longs
-    for (auto i{0L}; i < args.size(); ++i) {
+    // Use int64_t instead of size_t cuz args indexes with those
+    for (std::int64_t i{0}; i < static_cast<std::int64_t>(args.size()); ++i) {
         if (args[i] == "--lex") {
             c.stop_after_lex_ = true;
         } else if (args[i] == "--parse") {
