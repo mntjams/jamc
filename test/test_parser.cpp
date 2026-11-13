@@ -51,7 +51,7 @@ TEST(Parser, IntWithLeadingZeros) {
     EXPECT_EQ(expect, parse_res);
 }
 
-TEST(Parser, ValueGreaterThanInt) {
+TEST(Parser, ValueOutOfIntRange) {
     std::string_view constexpr source =
         "int main(void) {\n"
         "    return 123456789123456789;\n"
