@@ -32,9 +32,6 @@ auto TokenMatches(Matcher<TokenType> const &type_matcher,
                  Field("lexeme", &Token::lexeme, lexeme_matcher));
 }
 
-// TODO - One lexer test became a todo for parser tests:
-// constant with a prefix of zeros 00000000123
-
 // TODO - When the compiler gets more complicated create
 // golden lexer tests. Have input sources in test/ and
 // the expected golden files (stringified output of lexer).
