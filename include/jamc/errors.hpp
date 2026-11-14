@@ -2,10 +2,14 @@
 #define JAMC_ERRORS_HPP
 
 #include "jamc/helpers.hpp"
+#include "jamc/lex.hpp"
 
 #include <cstdint>
 #include <format>
+#include <span>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 namespace jamc {
 struct Error {};
@@ -33,6 +37,33 @@ public:
     explicit FileReadError(ErrorType t)
         : type{t} {};
 };
+
+struct ParseError : public Error {};
+
+struct UnexpectedTokenError : public ParseError {
+public:
+    std::vector<lex::TokenType> expect;
+    std::span<lex::Token const> got;
+
+    UnexpectedTokenError(std::vector<lex::TokenType> expect,
+                         std::span<lex::Token const> got)
+        : expect{std::move(expect)},
+          got{got} {}
+};
+
+struct InvalidConstantError : public ParseError {
+public:
+    std::string_view lexeme{};
+
+    explicit InvalidConstantError(std::string_view lexeme)
+        : lexeme{lexeme} {}
+};
+
+/**
+ * struct ParsePastTokensEndError - Parsing was done past the end of the token
+ * input.
+ */
+struct ParsePastTokensEndError : public ParseError {};
 }  // namespace jamc
 
 namespace std {

@@ -2,6 +2,7 @@ add_library(jamc
     lex.cpp
     cli_parse.cpp
     helpers.cpp
+    parse.cpp
 )
 
 target_include_directories(jamc

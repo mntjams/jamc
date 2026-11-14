@@ -21,7 +21,7 @@ target_link_libraries(test-lexer
 add_executable(test-parser
     test_parser.cpp
 )
-target_link_libraries(test-lexer
+target_link_libraries(test-parser
     PRIVATE jamc
     GTest::gmock_main
     common-compiler-flags

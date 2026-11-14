@@ -1,6 +1,8 @@
 #include "jamc/cli_parse.hpp"
+#include "jamc/errors.hpp"
 #include "jamc/helpers.hpp"
 #include "jamc/lex.hpp"
+#include "jamc/parse.hpp"
 
 #include <algorithm>
 #include <string>
@@ -10,6 +12,8 @@ auto main(int argc, char **argv) -> int {
     using ::jamc::ReadFile;
     using ::jamc::ReportErrors;
     using ::jamc::lex::Lex;
+    using ::jamc::parse::ParseProgram;
+    using ::jamc::ParseError;
 
     namespace rg = std::ranges;
 
@@ -41,8 +45,12 @@ auto main(int argc, char **argv) -> int {
         return 0;
     }
 
-    // TODO
-    // (void)Parse();
+    try {
+        ParseProgram(lex_res);
+    } catch (ParseError const& err) {
+        // TODO - Add formatters to errors and print them
+        return 1;
+    }
 
     if (cli_parse_res->StopAfterParse()) {
         return 0;
