@@ -8,6 +8,7 @@ Checks: >
   readability-*,
   -bugprone-easily-swappable-parameters,
   -google-readability-todo,
+  -google-runtime-int,
   -misc-non-private-member-variables-in-classes,
   -modernize-use-nodiscard,
   -readability-magic-numbers,
