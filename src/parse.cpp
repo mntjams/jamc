@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <ranges>
 #include <span>
+#include <algorithm>
 
 // NOTE - Parsing functions throw on first encountered error.
 // In the future, we may want to recover at the next recovery point
@@ -73,7 +74,7 @@ auto ParseConstant(TokenCursor &cur) -> Constant {
     if (current_token.type != const_token) {
         throw UnexpectedTokenError{
             {const_token},
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx), 1}};
+            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx), std::min(1UZ, cur.tokens.size() - cur.idx)}};
     }
 
     auto lexeme = cur.tokens[cur.idx].lexeme;
@@ -103,7 +104,7 @@ auto ParseStatement(TokenCursor &cur) -> Statement {
         throw UnexpectedTokenError{
             expect,
             std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      expect.size()}};
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
     }
 
     auto parsed_expr = ParseExpression(cur);
@@ -113,7 +114,7 @@ auto ParseStatement(TokenCursor &cur) -> Statement {
         throw UnexpectedTokenError{
             expect,
             std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      expect.size()}};
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
     }
 
     return Statement{.exp = parsed_expr};
@@ -127,7 +128,7 @@ auto ParseFunction(TokenCursor &cur) -> Function {
         throw UnexpectedTokenError{
             expect,
             std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      expect.size()}};
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
     }
 
     // We ended up just past the identifier
@@ -138,7 +139,7 @@ auto ParseFunction(TokenCursor &cur) -> Function {
         throw UnexpectedTokenError{
             expect,
             std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      expect.size()}};
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
     }
 
     auto body = ParseStatement(cur);
@@ -148,7 +149,7 @@ auto ParseFunction(TokenCursor &cur) -> Function {
         throw UnexpectedTokenError{
             expect,
             std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      expect.size()}};
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
     }
 
     return Function{.name = name, .body = body};
@@ -167,7 +168,7 @@ auto ParseProgram(lex::LexResult const &tokens) -> Program {
         throw UnexpectedTokenError{
             expect,
             std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      expect.size()}};
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
     }
 
     return Program{.function_definition = func};
