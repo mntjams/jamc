@@ -1,8 +1,8 @@
 #include "gmock/gmock.h"
 #include "jamc/lex.hpp"
+#include "helpers.hpp"
 
 #include <array>
-#include <cstddef>
 #include <gtest/gtest.h>
 #include <ranges>
 #include <string_view>
@@ -10,27 +10,13 @@
 
 namespace {
 using ::jamc::lex::Lex;
-using ::jamc::lex::Token;
 using ::jamc::lex::TokenType;
+using ::jamc::test::TokenMatches;
 using enum TokenType;
 
 using ::testing::_;
-using ::testing::AllOf;
 using ::testing::ContainerEq;
 using ::testing::ElementsAre;
-using ::testing::Field;
-using ::testing::Matcher;
-
-auto TokenMatches(Matcher<TokenType> const &type_matcher,
-                  Matcher<std::size_t> const &line_matcher,
-                  Matcher<std::size_t> const &col_matcher,
-                  Matcher<std::string_view> const &lexeme_matcher)
-    -> Matcher<Token const &> {
-    return AllOf(Field("type", &Token::type, type_matcher),
-                 Field("line", &Token::line, line_matcher),
-                 Field("col", &Token::col, col_matcher),
-                 Field("lexeme", &Token::lexeme, lexeme_matcher));
-}
 
 // TODO - When the compiler gets more complicated create
 // golden lexer tests. Have input sources in test/ and
