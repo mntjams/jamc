@@ -1,10 +1,5 @@
 # To-do list
 
-- [X] Parser
-    - [X] Do try catch in tests and inspect the returned value (TODO in test_parser.cpp)
-    - [X] Check that tests fail (see below for problem on why)
-    - [X] Fix span past tokens problem (TODO in src/parse.cpp)
-    - [X] Fix non-DRY repetition of !Expect->throw Unexpected... (TODO in src/parse.cpp)
 - [ ] Codegen
 - [ ] Code emission
 
