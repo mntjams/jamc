@@ -16,10 +16,6 @@
 // TODO - Many functions use the !Expect->throw UnexpectedTokenError.
 // This should be abstracted away into a function.
 
-// TODO - The construction of UnexpectedTokenError contains a bug.
-// It can point past the end of tokens when we expect N tokens but
-// there are fewer than that left.
-
 namespace {
 using ::jamc::InvalidConstantError;
 using ::jamc::ParsePastTokensEndError;
