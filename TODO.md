@@ -1,5 +1,7 @@
 # To-do list
 
+- [ ] Parser
+    - [ ] Print error if parsing failed
 - [ ] Codegen
 - [ ] Code emission
 
