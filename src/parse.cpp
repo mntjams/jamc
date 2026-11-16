@@ -3,18 +3,15 @@
 #include "jamc/errors.hpp"
 #include "jamc/lex.hpp"
 
+#include <algorithm>
 #include <charconv>
 #include <cstddef>
 #include <ranges>
 #include <span>
-#include <algorithm>
 
 // NOTE - Parsing functions throw on first encountered error.
 // In the future, we may want to recover at the next recovery point
 // (next ';', '}', etc.) and start parsing again from there.
-
-// TODO - Many functions use the !Expect->throw UnexpectedTokenError.
-// This should be abstracted away into a function.
 
 namespace {
 using ::jamc::InvalidConstantError;
@@ -59,6 +56,19 @@ auto Expect(std::vector<TokenType> const &expect, TokenCursor &cur) noexcept
     return true;
 }
 
+/**
+ * @brief Call Expect(expect, cur) and throw UnexpectedTokenError if it returns
+ * false.
+ */
+void CheckExpected(std::vector<TokenType> const &expect, TokenCursor &cur) {
+    if (!Expect(expect, cur)) {
+        throw UnexpectedTokenError{
+            expect,
+            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
+                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
+    }
+}
+
 auto ParseConstant(TokenCursor &cur) -> Constant {
     auto constexpr const_token = ::jamc::lex::TokenType::Constant;
 
@@ -70,7 +80,8 @@ auto ParseConstant(TokenCursor &cur) -> Constant {
     if (current_token.type != const_token) {
         throw UnexpectedTokenError{
             {const_token},
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx), std::min(1UZ, cur.tokens.size() - cur.idx)}};
+            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
+                      std::min(1UZ, cur.tokens.size() - cur.idx)}};
     }
 
     auto lexeme = cur.tokens[cur.idx].lexeme;
@@ -95,59 +106,21 @@ auto ParseExpression(TokenCursor &cur) -> ReturnExpression {
 auto ParseStatement(TokenCursor &cur) -> Statement {
     using enum ::jamc::lex::TokenType;
 
-    std::vector<TokenType> expect{Return};
-    if (!Expect(expect, cur)) {
-        throw UnexpectedTokenError{
-            expect,
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
-    }
-
+    CheckExpected({Return}, cur);
     auto parsed_expr = ParseExpression(cur);
-
-    expect = {Semic};
-    if (!Expect(expect, cur)) {
-        throw UnexpectedTokenError{
-            expect,
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
-    }
-
+    CheckExpected({Semic}, cur);
     return Statement{.exp = parsed_expr};
 }
 
 auto ParseFunction(TokenCursor &cur) -> Function {
     using enum ::jamc::lex::TokenType;
 
-    std::vector<TokenType> expect{Int, Ident};
-    if (!Expect(expect, cur)) {
-        throw UnexpectedTokenError{
-            expect,
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
-    }
-
+    CheckExpected({Int, Ident}, cur);
     // We ended up just past the identifier
     auto name = cur.tokens[cur.idx - 1].lexeme;
-
-    expect = {LParen, Void, RParen, LBrace};
-    if (!Expect(expect, cur)) {
-        throw UnexpectedTokenError{
-            expect,
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
-    }
-
+    CheckExpected({LParen, Void, RParen, LBrace}, cur);
     auto body = ParseStatement(cur);
-
-    expect = {RBrace};
-    if (!Expect(expect, cur)) {
-        throw UnexpectedTokenError{
-            expect,
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
-    }
-
+    CheckExpected({RBrace}, cur);
     return Function{.name = name, .body = body};
 }
 }  // namespace
@@ -158,15 +131,7 @@ auto ParseProgram(lex::LexResult const &tokens) -> Program {
 
     TokenCursor cur{.tokens = tokens};
     auto func = ParseFunction(cur);
-
-    std::vector<TokenType> expect{Eof};
-    if (!Expect(expect, cur)) {
-        throw UnexpectedTokenError{
-            expect,
-            std::span{cur.tokens.cbegin() + static_cast<long>(cur.idx),
-                      std::min(expect.size(), cur.tokens.size() - cur.idx)}};
-    }
-
+    CheckExpected({Eof}, cur);
     return Program{.function_definition = func};
 }
 }  // namespace jamc::parse
