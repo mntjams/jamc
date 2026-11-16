@@ -37,8 +37,8 @@ auto main(int argc, char **argv) -> int {
     // detect failures during lexing (insertion of Unknown token).
     auto unknown_token_it = rg::find(
         lex_res, jamc::lex::TokenType::Unknown, &jamc::lex::Token::type);
-    // std::println("{}", lex_res);
     if (unknown_token_it != lex_res.cend()) {
+        std::println("{}", lex_res);
         return 1;
     }
     if (cli_parse_res->StopAfterLex()) {
